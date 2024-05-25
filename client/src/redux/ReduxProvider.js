@@ -1,8 +1,9 @@
+"use client"
 import React from 'react'
 import { Provider } from 'react-redux'
 import store from './store/configureStore'
 
-const ReduxProvider = ({chilren}) => {
+const ReduxProvider = ({children}) => {
   return (
     <div>
         <Provider store={store}>
