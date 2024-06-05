@@ -1,5 +1,5 @@
 
-# IT-Gyaan
+# Nepal-Pasal
 
 Nepal-pasal is a comprehensive e-commerce platform . The platform aims to simplify online shopping and enhance the digital marketplace experience for both buyers and sellers. Key features include secure user registration and login, an extensive catalog of products, advanced search and filter options, a smooth shopping cart and checkout process, secure payment gateway integration, real-time order tracking, and a dedicated vendor portal for managing listings and sales. 
 
