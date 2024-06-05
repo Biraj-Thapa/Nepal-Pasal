@@ -1,9 +1,9 @@
-import { configureStore, Tuple, combineReducers } from "@reduxjs/toolkit";
-import counterSlice from "../reducerSlice/counterSlice";
-import boxSlice from "../reducerSlice/boxSlice";
+import { configureStore, Tuple, combineReducers } from "@reduxjs/toolkit"
 import { logger } from "redux-logger";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import counterSlice from "../reducerSlices/counterSlice";
+import boxSlice from "../reducerSlices/boxSlice";
 
 const persistConfig = {
   key: "root",
