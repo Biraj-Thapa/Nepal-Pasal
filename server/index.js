@@ -1,10 +1,13 @@
 const express = require("express");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 const connection = require("./src/db/connection");
 const app = express();
 app.use(express.json());
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 require("dotenv").config();
+
 const port = process.env.PORT;
 connection();
 const userSchema = new Schema({
@@ -20,18 +23,21 @@ const userSchema = new Schema({
 });
 const User = mongoose.model("User", userSchema);
 
-app.post('/register', async (req, res) => {
-  const phoneExist  = await User.exists({phoneNumber: req.body.phoneNumber})
-  const emailExist  = await User.exists({email: req.body.email})
+app.post("/register", async (req, res) => {
+  const hashPassword=  await bcrypt.hash(req.body.password,saltRounds)
 
-  if(phoneExist ){
-   return res.json({msg: "Phone Number exists"})
-  }else if(emailExist){
-    return res.json({msg: "Email exists"})
+ req.body.password=hashPassword
+  const phoneExist = await User.exists({ phoneNumber: req.body.phoneNumber });
+  const emailExist = await User.exists({ email: req.body.email });
+
+  if (phoneExist) {
+    return res.json({ msg: "Phone Number exists" });
+  } else if (emailExist) {
+    return res.json({ msg: "Email exists" });
   }
-  await User.create(req.body)
-  return res.json({msg: "User registered successfully"})
-})
+  await User.create(req.body);
+  return res.json({ msg: "User registered successfully" });
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
