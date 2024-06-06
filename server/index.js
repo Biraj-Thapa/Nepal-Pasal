@@ -3,12 +3,14 @@ const bcrypt = require("bcrypt");
 
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
+const cors = require('cors')
 const connection = require("./src/db/connection");
 const app = express();
 app.use(express.json());
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 require("dotenv").config();
+app.use(cors())
 
 const port = process.env.PORT;
 connection();
