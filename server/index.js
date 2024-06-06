@@ -2,7 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 
 const saltRounds = 10;
-var jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const connection = require("./src/db/connection");
 const app = express();
 app.use(express.json());
@@ -26,9 +26,9 @@ const userSchema = new Schema({
 const User = mongoose.model("User", userSchema);
 
 app.post("/register", async (req, res) => {
-  const hashPassword=  await bcrypt.hash(req.body.password,saltRounds)
+  const hashPassword = await bcrypt.hash(req.body.password, saltRounds);
 
- req.body.password=hashPassword
+  req.body.password = hashPassword;
   const phoneExist = await User.exists({ phoneNumber: req.body.phoneNumber });
   const emailExist = await User.exists({ email: req.body.email });
 
@@ -40,23 +40,23 @@ app.post("/register", async (req, res) => {
   await User.create(req.body);
   return res.json({ msg: "User registered successfully" });
 });
-app.post('/login', async (req,res)=>{
-  const user=await User.findOne({phoneNumber:req.body.phoneNumber})
-  if(user){
-    const isMatched= await bcrypt.compare(req.body.password,user.password)
-   if(isMatched){
-    res.json({msg:"yahoo"})
-
-   }
-   else{
-    res.json({msg:"password didnot matched"})
-   }
-
+app.post("/login", async (req, res) => {
+  const user = await User.findOne({ phoneNumber: req.body.phoneNumber });
+  if (user) {
+    const isMatched = await bcrypt.compare(req.body.password, user.password);
+    if (isMatched) {
+      const token = jwt.sign(
+        { phomeNumber: req.body.phoneNumber },
+        process.env.SECRET_KEY
+      );
+      res.json({ msg: "yahoo", token });
+    } else {
+      res.json({ msg: "password didnot matched" });
+    }
+  } else {
+    res.json({ msg: "User Not registered" });
   }
-  else{
-    res.json({msg:"User Not registered"})
-  }
-})
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
