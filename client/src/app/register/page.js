@@ -22,9 +22,20 @@ const Register = () => {
       password: "1234",
     },
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      registerUser(values);
     },
   });
+  const registerUser = async (values) => {
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    };
+    const response = await fetch(
+      "http://localhost:4000/register",
+      requestOptions
+    );
+  };
 
   return (
     <div className="flex flex-col w-full ">
@@ -91,7 +102,7 @@ const Register = () => {
                   isRequired
                   label="Email"
                   placeholder="Enter your email"
-                  name="firstName"
+                  name="email"
                   type="email"
                   onChange={formik.handleChange}
                   value={formik.values.email}
@@ -112,7 +123,7 @@ const Register = () => {
                   </Link>
                 </p>
                 <div className="flex gap-2 justify-end">
-                  <Button fullWidth color="primary">
+                  <Button type="submit" fullWidth color="primary">
                     Sign up
                   </Button>
                 </div>
