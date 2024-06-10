@@ -3,14 +3,14 @@ const bcrypt = require("bcrypt");
 
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
-const cors = require('cors')
+const cors = require("cors");
 const connection = require("./src/db/connection");
 const app = express();
 app.use(express.json());
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 require("dotenv").config();
-app.use(cors())
+app.use(cors());
 
 const port = process.env.PORT;
 connection();
@@ -35,9 +35,9 @@ app.post("/register", async (req, res) => {
   const emailExist = await User.exists({ email: req.body.email });
 
   if (phoneExist) {
-    return res.json({ msg: "Phone Number exists" });
+    return res.status(409).json({ msg: "Phone Number is taken!" });
   } else if (emailExist) {
-    return res.json({ msg: "Email exists" });
+    return res.status(409).json({ msg: "Phone Number is taken!" });
   }
   await User.create(req.body);
   return res.json({ msg: "User registered successfully" });
@@ -48,15 +48,15 @@ app.post("/login", async (req, res) => {
     const isMatched = await bcrypt.compare(req.body.password, user.password);
     if (isMatched) {
       const token = jwt.sign(
-        { phomeNumber: req.body.phoneNumber },
+        { phoneNumber: req.body.phoneNumber },
         process.env.SECRET_KEY
       );
-      res.json({ msg: "yahoo", token });
+      res.json({ msg: "yahoo", token, user });
     } else {
-      res.json({ msg: "password didnot matched" });
+      res.status(401).json({ msg: "Invalid Password" });
     }
   } else {
-    res.json({ msg: "User Not registered" });
+    res.status(401).json({ msg: "User Not registered" });
   }
 });
 

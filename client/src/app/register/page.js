@@ -9,17 +9,21 @@ import {
   Card,
   CardBody,
   CardHeader,
+  RadioGroup,
+  Radio,
 } from "@nextui-org/react";
 import { useFormik } from "formik";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const [selected, setSelected] = React.useState("login");
   const formik = useFormik({
     initialValues: {
-      phoneNumber: "9872123",
-      fullName: "Biraj",
-      email: "birajthapa983",
-      password: "1234",
+      phoneNumber: "",
+      fullName: "",
+      email: "",
+      password: "",
+      role: "",
     },
     onSubmit: (values) => {
       registerUser(values);
@@ -35,6 +39,12 @@ const Register = () => {
       "http://localhost:4000/register",
       requestOptions
     );
+    const data = await response.json();
+    if (response.status == "200") {
+      toast.success(data.msg);
+    } else {
+      toast.error(data.msg);
+    }
   };
 
   return (
@@ -62,6 +72,7 @@ const Register = () => {
                   placeholder="Enter your password"
                   type="password"
                 />
+
                 <p className="text-center text-small">
                   Need to create an account?{" "}
                   <Link size="sm" onPress={() => setSelected("sign-up")}>
@@ -116,6 +127,15 @@ const Register = () => {
                   onChange={formik.handleChange}
                   value={formik.values.password}
                 />
+                <RadioGroup
+                  label="Select role"
+                  name="role"
+                  onChange={formik.handleChange}
+                  value={formik.values.role}
+                >
+                  <Radio value="user">User</Radio>
+                  <Radio value="admin">Admin</Radio>
+                </RadioGroup>
                 <p className="text-center text-small">
                   Already have an account?{" "}
                   <Link size="sm" onPress={() => setSelected("login")}>
