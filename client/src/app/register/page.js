@@ -29,6 +29,16 @@ const Register = () => {
       registerUser(values);
     },
   });
+  const formikLogin = useFormik({
+    initialValues: {
+      phoneNumber: "",
+      password: "",
+    },
+    onSubmit: (values) => {
+      loginUser(values);
+    },
+  });
+
   const registerUser = async (values) => {
     const requestOptions = {
       method: "POST",
@@ -40,6 +50,22 @@ const Register = () => {
       requestOptions
     );
     const data = await response.json();
+    if (response.status == "200") {
+      toast.success(data.msg);
+      setSelected("login");
+    } else {
+      toast.error(data.msg);
+    }
+  };
+  const loginUser = async (values) => {
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    };
+    const response = await fetch("http://localhost:4000/login", requestOptions);
+    const data = await response.json();
+
     if (response.status == "200") {
       toast.success(data.msg);
     } else {
@@ -59,16 +85,25 @@ const Register = () => {
             onSelectionChange={setSelected}
           >
             <Tab key="login" title="Login">
-              <form className="flex flex-col gap-4">
+              <form
+                onSubmit={formikLogin.handleSubmit}
+                className="flex flex-col gap-4"
+              >
                 <Input
+                  name="phoneNumber"
+                  onChange={formikLogin.handleChange}
+                  value={formikLogin.values.phoneNumber}
                   isRequired
-                  label="Email"
-                  placeholder="Enter your email"
-                  type="email"
+                  label="Phone Number"
+                  placeholder="Enter your phoneNumber"
+                  type="number"
                 />
                 <Input
                   isRequired
                   label="Password"
+                  name="password"
+                  onChange={formikLogin.handleChange}
+                  value={formikLogin.values.password}
                   placeholder="Enter your password"
                   type="password"
                 />
@@ -80,7 +115,7 @@ const Register = () => {
                   </Link>
                 </p>
                 <div className="flex gap-2 justify-end">
-                  <Button fullWidth color="primary">
+                  <Button type="submit" fullWidth color="primary">
                     Login
                   </Button>
                 </div>
